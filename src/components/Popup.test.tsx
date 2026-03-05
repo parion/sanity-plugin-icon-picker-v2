@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event';
 
 import { render } from '../../test/utils';
 import Popup from './Popup';
-import { vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 describe('Popup', () => {
   const mockOnClose = vi.fn();

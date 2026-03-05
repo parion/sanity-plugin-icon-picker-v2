@@ -4,6 +4,7 @@ import { render } from '../../../test/utils';
 import { OptionsProvider } from '../../hooks/useOptions';
 import { TabList, TabPanel, Tabs } from '.';
 import type { ReactElement, ReactNode } from 'react';
+import { describe, it, expect } from 'vitest';
 
 const tabsRender = (ui: ReactElement) =>
   render(ui, {

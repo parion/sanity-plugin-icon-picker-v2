@@ -12,6 +12,13 @@
     "plugin:prettier/recommended",
     "plugin:vitest/recommended"
   ],
+  "ignorePatterns": [
+    "dist",
+    "node_modules",
+    "coverage",
+    "build",
+    "public"
+  ],
   "settings": {
     "import/resolver": {
       "typescript": true

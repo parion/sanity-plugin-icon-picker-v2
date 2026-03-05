@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { render } from '../../test/utils';
 import SearchBar from './SearchBar';
-import { vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 function renderControlledComponent(FormComponent: any, props: any) {
   let mockOnChange;

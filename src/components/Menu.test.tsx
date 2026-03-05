@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { createMockIcon } from '../../test/mocks';
 import { render } from '../../test/utils';
 import Menu, { Action } from './Menu';
-import { vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 describe('Menu', () => {
   const mockOnClick = vi.fn();

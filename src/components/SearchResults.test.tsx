@@ -1,11 +1,10 @@
 import userEvent from '@testing-library/user-event';
-import type AutoSizer from 'react-virtualized-auto-sizer';
 
 import { createMockIcon, createMockIconArray } from '../../test/mocks';
 import { render } from '../../test/utils';
 import SearchResults from './SearchResults';
 import type React from 'react';
-import { vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('react-virtualized-auto-sizer', () => ({
   default: ({ children }: React.ComponentProps<typeof AutoSizer>) =>
