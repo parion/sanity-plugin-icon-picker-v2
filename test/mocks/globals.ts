@@ -1,7 +1,7 @@
 import { vi } from 'vitest';
 
 export const setupGlobalResizeObserver = (): void => {
-  global.ResizeObserver = vi.fn().mockImplementation(function () {
+  globalThis.ResizeObserver = vi.fn().mockImplementation(function () {
     return {
       disconnect: vi.fn(),
       observe: vi.fn(),
@@ -11,7 +11,7 @@ export const setupGlobalResizeObserver = (): void => {
 };
 
 export const setupGlobalMatchMedia = (): void => {
-  global.matchMedia = vi.fn().mockImplementation((query) => ({
+  globalThis.matchMedia = vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,

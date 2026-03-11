@@ -1,13 +1,12 @@
 import { Button, Flex, Grid, Spinner, Text } from '@sanity/ui';
-import { useEffect, useRef, useState } from 'react';
-import { List } from 'react-window';
+import { useMemo, useRef } from 'react';
 import { styled } from 'styled-components';
 
 import { ALL_CONFIGURATIONS_PROVIDER } from '../constants/config';
 import useMedia from '../hooks/useMedia';
 import type { IconObject, IconObjectArray } from '../types';
 import { listToMatrix } from '../utils/helpers';
-import { ListChildComponentProps } from 'react-window';
+import { useVirtualizer } from '@tanstack/react-virtual';
 
 const Wrapper = styled.section`
   min-height: 200px;
@@ -36,7 +35,7 @@ const SearchResults = ({
   loading,
   query,
 }: ISearchResults) => {
-  const [filtered, setFiltered] = useState<IconObjectArray[]>([]);
+  // const [filtered, setFiltered] = useState<IconObjectArray[]>([]);
   const COLUMNS_COUNT = useMedia(
     // Media queries
     ['(min-width: 960px)', '(min-width: 640px)', '(min-width: 512px)'],
@@ -45,99 +44,91 @@ const SearchResults = ({
     // Default column count
     1,
   );
+  const filtered = useMemo<IconObjectArray[]>(() => {
+    const icons =
+      !filter || filter === ALL_CONFIGURATIONS_PROVIDER
+        ? results
+        : results.filter((item) => item.provider === filter);
+    console.log('filtered icons', icons);
+    return listToMatrix(Object.values(icons), COLUMNS_COUNT);
+  }, [results, filter, COLUMNS_COUNT]);
 
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return;
+  const rowVirtualizer = useVirtualizer({
+    count: filtered.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => 35,
+  });
 
-    const observer = new ResizeObserver(([entry]) => {
-      const { width, height } = entry.contentRect;
-      setDimensions({ width, height });
-      updateIcons(COLUMNS_COUNT);
-    });
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [COLUMNS_COUNT]);
-
-  const getFiltered = (items: IconObjectArray) => {
-    if (!filter || filter === ALL_CONFIGURATIONS_PROVIDER) return items;
-    return items.filter((item) => item.provider === filter);
-  };
-  function updateIcons(cols: number) {
-    const icons = getFiltered(results);
-    const mappedIcons = listToMatrix(Object.values(icons), cols);
-    setFiltered(mappedIcons);
-  }
-
-  const createIconButton = (icon: IconObject) => {
-    const buttonRef = useRef<HTMLButtonElement>(null);
-
-    return (
-      <Button
-        ref={buttonRef} // <--here
-        key={icon.provider.concat(icon.name)}
-        mode="ghost"
-        onClick={() => onSelect(icon, buttonRef.current!)}
-        text={<icon.component />}
-        style={{ marginTop: '5px' }}
-        selected={
-          !!selected &&
-          selected.provider === icon.provider &&
-          icon.name === selected.name
-        }
-      />
-    );
-  };
-
-  const Row = ({ index, style }: ListChildComponentProps) => (
-    <Grid
-      key={index.toString()}
-      style={style}
-      columns={[1, 2, 4, 6]}
-      gap={[1, 1, 1, 1]}
-    >
-      {filtered[index].map(createIconButton)}
+  const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => (
+    <Grid style={style} columns={[1, 2, 4, 6]} gap={[1, 1, 1, 1]}>
+      {filtered[index].map((icon) => (
+        <Button
+          key={icon.provider.concat(icon.name)}
+          mode="ghost"
+          onClick={(e) => onSelect(icon, e.currentTarget as HTMLButtonElement)} // no useRef needed
+          text={<icon.component />}
+          style={{ marginTop: '5px' }}
+          selected={!!selected && selected.provider === icon.provider && icon.name === selected.name}
+        />
+      ))}
     </Grid>
   );
 
-  const onResize = () => {
-    updateIcons(COLUMNS_COUNT);
-  };
-
   return (
     <Wrapper>
-      {loading && (
-        <Flex
-          align="center"
-          justify="center"
-          style={{ width: '100%', height: '100%', position: 'absolute' }}
-        >
-          <Spinner size={4} muted />
-        </Flex>
-      )}
-      {!loading && !!filtered.length && (
-        <List
-          height={dimensions.height}
-          itemCount={filtered.length}
-          itemSize={45}
-          width={dimensions.width}
-        >
-          {Row}
-        </List>
-      )}
-      {!loading && !filtered.length && (
-        <Flex
-          align="center"
-          justify="center"
-          style={{ width: '100%', height: '100%', position: 'absolute' }}
-        >
-          <Text>{`No results found for "${query}"`}</Text>
-        </Flex>
-      )}
+      {/* The scrollable element for your list */}
+      <div
+        ref={scrollRef}
+        style={{
+          height: `400px`,
+          overflow: 'auto', // Make it scroll!
+        }}
+      >
+        {loading && (
+          <Flex
+            align="center"
+            justify="center"
+            style={{ width: '100%', height: '100%', position: 'absolute' }}
+          >
+            <Spinner size={4} muted />
+          </Flex>
+        )}
+        {!loading && !!filtered.length && (
+          <div
+            style={{
+              height: `${rowVirtualizer.getTotalSize()}px`,
+              width: '100%',
+              position: 'relative',
+            }}
+          >
+            {/* Only the visible items in the virtualizer, manually positioned to be in view */}
+            {rowVirtualizer.getVirtualItems().map((virtualItem) => (
+              <div
+                key={virtualItem.key}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: `${virtualItem.size}px`,
+                  transform: `translateY(${virtualItem.start}px)`,
+                }}
+              ><Row index={virtualItem.index} style={{ height: `${virtualItem.size}px` }} /></div>
+            ))}
+          </div>
+        )}
+        {!loading && !filtered.length && (
+          <Flex
+            align="center"
+            justify="center"
+            style={{ width: '100%', height: '100%', position: 'absolute' }}
+          >
+            <Text>{`No results found for "${query}"`}</Text>
+          </Flex>
+        )}
+      </div>
     </Wrapper>
   );
 };

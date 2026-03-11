@@ -1,9 +1,16 @@
 {
   "extends": "./tsconfig.settings",
-  "include": ["./src", "./test", "./package.config.ts"],
+  "include": [
+    "./src",
+    "./test",
+    "./package.config.ts"
+  ],
   "compilerOptions": {
     "rootDir": ".",
     "jsx": "react-jsx",
-    "noEmit": true
+    "noEmit": true,
+    "types": [
+      "@testing-library/jest-dom"
+    ],
   }
 }

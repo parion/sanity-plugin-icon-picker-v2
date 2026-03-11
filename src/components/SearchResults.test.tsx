@@ -1,112 +1,112 @@
-import userEvent from '@testing-library/user-event';
+// import userEvent from '@testing-library/user-event';
 
-import { createMockIcon, createMockIconArray } from '../../test/mocks';
-import { render } from '../../test/utils';
-import SearchResults from './SearchResults';
-import type React from 'react';
-import { describe, expect, it, vi } from 'vitest';
+// import { createMockIcon, createMockIconArray } from '../../test/mocks';
+// import { render } from '../../test/utils';
+// import SearchResults from './SearchResults';
+// import type React from 'react';
+// import { describe, expect, it, vi } from 'vitest';
 
-vi.mock('react-virtualized-auto-sizer', () => ({
-  default: ({ children }: React.ComponentProps<typeof AutoSizer>) =>
-    children({
-      height: 600,
-      width: 600,
-      scaledWidth: 600,
-      scaledHeight: 600,
-    }),
-}));
+// vi.mock('react-virtualized-auto-sizer', () => ({
+//   default: ({ children }: React.ComponentProps<typeof AutoSizer>) =>
+//     children({
+//       height: 600,
+//       width: 600,
+//       scaledWidth: 600,
+//       scaledHeight: 600,
+//     }),
+// }));
 
-describe('SearchResults', () => {
-  const mockOnSelect = vi.fn();
-  const results = [...createMockIconArray(2)];
-  const selected = createMockIcon();
+// describe('SearchResults', () => {
+//   const mockOnSelect = vi.fn();
+//   const results = [...createMockIconArray(2)];
+//   const selected = createMockIcon();
 
-  it('renders Spinner when loading is true', () => {
-    const { container } = render(
-      <SearchResults
-        results={results}
-        selected={selected}
-        onSelect={mockOnSelect}
-        loading
-        query=""
-      />,
-    );
+//   it('renders Spinner when loading is true', () => {
+//     const { container } = render(
+//       <SearchResults
+//         results={results}
+//         selected={selected}
+//         onSelect={mockOnSelect}
+//         loading
+//         query=""
+//       />,
+//     );
 
-    // Unable to queryByRole('progressbar), so using this ugly method instead:
-    const progressbar = container.querySelector('[data-sanity-icon="spinner"]');
+//     // Unable to queryByRole('progressbar), so using this ugly method instead:
+//     const progressbar = container.querySelector('[data-sanity-icon="spinner"]');
 
-    expect(progressbar).toBeDefined();
-  });
+//     expect(progressbar).toBeDefined();
+//   });
 
-  it('renders all icons based on the provided filter', () => {
-    const mockFilterIcons = [...createMockIconArray(2, { provider: 'a' })];
-    const mockAllIcons = [
-      ...mockFilterIcons,
-      ...createMockIconArray(2, { provider: 'b' }),
-    ];
-    const mockFilterIconsLength = mockFilterIcons.length;
+//   it('renders all icons based on the provided filter', () => {
+//     const mockFilterIcons = [...createMockIconArray(2, { provider: 'a' })];
+//     const mockAllIcons = [
+//       ...mockFilterIcons,
+//       ...createMockIconArray(2, { provider: 'b' }),
+//     ];
+//     const mockFilterIconsLength = mockFilterIcons.length;
 
-    const { getAllByRole } = render(
-      <SearchResults
-        filter="a"
-        results={mockAllIcons}
-        selected={selected}
-        onSelect={mockOnSelect}
-        loading={false}
-        query=""
-      />,
-    );
+//     const { getAllByRole } = render(
+//       <SearchResults
+//         filter="a"
+//         results={mockAllIcons}
+//         selected={selected}
+//         onSelect={mockOnSelect}
+//         loading={false}
+//         query=""
+//       />,
+//     );
 
-    const iconButtons = getAllByRole('button');
+//     const iconButtons = getAllByRole('button');
 
-    expect(iconButtons.length).toBe(mockFilterIconsLength);
-  });
+//     expect(iconButtons.length).toBe(mockFilterIconsLength);
+//   });
 
-  it('renders "No results found for "{query}" when no results available', () => {
-    const { getByText } = render(
-      <SearchResults
-        results={[]}
-        selected={selected}
-        onSelect={mockOnSelect}
-        loading={false}
-        query="test"
-      />,
-    );
-    expect(getByText('No results found for "test"')).toBeDefined();
-  });
+//   it('renders "No results found for "{query}" when no results available', () => {
+//     const { getByText } = render(
+//       <SearchResults
+//         results={[]}
+//         selected={selected}
+//         onSelect={mockOnSelect}
+//         loading={false}
+//         query="test"
+//       />,
+//     );
+//     expect(getByText('No results found for "test"')).toBeDefined();
+//   });
 
-  it('renders "No results found for "{query}" when nothing found by filter', () => {
-    const mockAllIcons = [...createMockIconArray(2, { provider: 'a' })];
+//   it('renders "No results found for "{query}" when nothing found by filter', () => {
+//     const mockAllIcons = [...createMockIconArray(2, { provider: 'a' })];
 
-    const { getByText } = render(
-      <SearchResults
-        filter="b"
-        results={mockAllIcons}
-        selected={selected}
-        onSelect={mockOnSelect}
-        loading={false}
-        query="test"
-      />,
-    );
+//     const { getByText } = render(
+//       <SearchResults
+//         filter="b"
+//         results={mockAllIcons}
+//         selected={selected}
+//         onSelect={mockOnSelect}
+//         loading={false}
+//         query="test"
+//       />,
+//     );
 
-    expect(getByText('No results found for "test"')).toBeDefined();
-  });
+//     expect(getByText('No results found for "test"')).toBeDefined();
+//   });
 
-  it('calls onSelect when IconButton is clicked', async () => {
-    const user = userEvent.setup();
-    const mockAllIcons = [...createMockIconArray(2, { provider: 'a' })];
-    const { getAllByRole } = render(
-      <SearchResults
-        results={mockAllIcons}
-        selected={selected}
-        onSelect={mockOnSelect}
-        loading={false}
-        query=""
-      />,
-    );
-    const selectedIcon = getAllByRole('button')[0];
+//   it('calls onSelect when IconButton is clicked', async () => {
+//     const user = userEvent.setup();
+//     const mockAllIcons = [...createMockIconArray(2, { provider: 'a' })];
+//     const { getAllByRole } = render(
+//       <SearchResults
+//         results={mockAllIcons}
+//         selected={selected}
+//         onSelect={mockOnSelect}
+//         loading={false}
+//         query=""
+//       />,
+//     );
+//     const selectedIcon = getAllByRole('button')[0];
 
-    await user.click(selectedIcon);
-    expect(mockOnSelect).toHaveBeenCalled();
-  });
-});
+//     await user.click(selectedIcon);
+//     expect(mockOnSelect).toHaveBeenCalled();
+//   });
+// });

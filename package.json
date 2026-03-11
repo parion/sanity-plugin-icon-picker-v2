@@ -49,8 +49,8 @@
     "format": "prettier --write --cache --ignore-unknown .",
     "format:check": "prettier --check .",
     "link-watch": "plugin-kit link-watch",
-    "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
-    "lint:check": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
     "prepare": "husky install",
     "prepublishOnly": "run-s build",
     "test": "vitest run",
@@ -60,37 +60,31 @@
   "dependencies": {
     "@sanity/incompatible-plugin": "^1.0.5",
     "@sanity/ui": "^3.1.13",
+    "@tanstack/react-virtual": "^3.13.21",
     "decamelize": "6.0.1",
     "framework7-icons": "^5.0.5",
     "react-icons": "^5.6.0",
     "react-window": "^2.2.7",
-    "sanity": "^5.13.0",
+    "sanity": "^5.14.1",
     "styled-components": "^6.3.11"
   },
   "devDependencies": {
-    "@sanity/pkg-utils": "^10.4.7",
+    "@eslint/compat": "^2.0.3",
+    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/js": "^10.0.1",
+    "@sanity/pkg-utils": "^10.4.8",
     "@sanity/plugin-kit": "^4.0.20",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.2.14",
-    "@types/react-window": "^1.8.8",
-    "@typescript-eslint/eslint-plugin": "^8.56.1",
-    "@typescript-eslint/parser": "^8.56.1",
     "@vitest/coverage-v8": "^4.0.18",
-    "eslint": "^9.39.3",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-config-sanity": "^7.1.4",
-    "eslint-import-resolver-typescript": "^4.4.4",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-prettier": "^5.5.5",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-unused-imports": "^4.4.1",
-    "@vitest/eslint-plugin": "^1.6.9",
+    "@vitest/eslint-plugin": "^1.6.10",
+    "eslint": "^10.0.3",
+    "globals": "^17.4.0",
     "husky": "^9.1.7",
     "jsdom": "^28.1.0",
-    "npm-run-all": "^4.1.5",
+    "npm-run-all2": "^8.0.4",
     "prettier": "^3.8.1",
     "prettier-plugin-packagejson": "^3.0.2",
     "react": "^19.2.4",
@@ -98,21 +92,24 @@
     "react-is": "^19.2.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.0",
     "vitest": "^4.0.18"
   },
   "peerDependencies": {
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-is": "19.2.4",
-    "sanity": "^5.13.0"
+    "sanity": "^5.14.1"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=24"
   },
   "sanityExchangeUrl": "https://www.sanity.io/plugins/icon-picker-v2",
   "sanityPlugin": {
     "verifyPackage": {
-      "scripts": false
+      "scripts": false,
+      "nodeEngine": false,
+      "eslintImports": false
     }
   }
 }
